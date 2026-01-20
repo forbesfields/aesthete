@@ -7,18 +7,24 @@ const statsCounter = document.getElementById('stats-counter');
 
 // Liquid Glass Effect
 const panel = document.querySelector('.bottom-panel');
-panel.addEventListener('mousemove', (e) => {
+const handleMouseMove = (e) => {
     const rect = panel.getBoundingClientRect();
     const x = ((e.clientX - rect.left) / rect.width) * 100;
     const y = ((e.clientY - rect.top) / rect.height) * 100;
     panel.style.setProperty('--mouse-x', `${x}%`);
     panel.style.setProperty('--mouse-y', `${y}%`);
     panel.style.setProperty('--highlight-opacity', '1');
-});
+};
 
-panel.addEventListener('mouseleave', () => {
+const handleMouseLeave = () => {
     panel.style.setProperty('--highlight-opacity', '0');
-});
+};
+
+// Only enable mouse-tracking effects on devices with a mouse
+if (window.matchMedia("(pointer: fine)").matches) {
+    panel.addEventListener('mousemove', handleMouseMove);
+    panel.addEventListener('mouseleave', handleMouseLeave);
+}
 
 // Settings Menu Toggle
 function toggleSettingsMenu() {

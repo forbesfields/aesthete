@@ -867,3 +867,99 @@ input[type="range"]::-webkit-slider-thumb {
     width: 16px;
     height: 16px;
 }
+
+
+/* Mobile Optimization */
+@media (max-width: 768px) {
+    #editor-container {
+        padding: 15px;
+        padding-bottom: 150px;
+        margin-top: 5vh;
+    }
+
+    #editor {
+        font-size: 18px;
+    }
+
+    .stats-counter {
+        top: 15px;
+        right: 15px;
+        font-size: 10px;
+        background: rgba(255, 255, 255, 0.5);
+        backdrop-filter: blur(5px);
+        padding: 4px 8px;
+        border-radius: 8px;
+        z-index: 100;
+    }
+
+    .dark-mode .stats-counter {
+        background: rgba(0, 0, 0, 0.5);
+    }
+
+    .bottom-panel {
+        width: 95vw;
+        max-width: none;
+        gap: 5px;
+        padding: 6px 10px;
+        bottom: 15px;
+        justify-content: flex-start;
+        overflow-x: auto;
+        border-radius: 20px;
+        scrollbar-width: none;
+        white-space: nowrap;
+        background: rgba(255, 255, 255, 0.8) !important;
+    }
+
+    .dark-mode .bottom-panel {
+        background: rgba(20, 20, 20, 0.8) !important;
+    }
+
+    .bottom-panel::-webkit-scrollbar {
+        display: none;
+    }
+
+    .tool-btn {
+        padding: 10px;
+        font-size: 16px;
+        flex-shrink: 0;
+    }
+
+    .divider {
+        height: 16px;
+        margin: 0 4px;
+        flex-shrink: 0;
+    }
+
+    .find-replace-bar {
+        width: 95vw;
+        right: 2.5vw;
+        top: 10px;
+        padding: 10px;
+        z-index: 1600;
+    }
+
+    .find-replace-bar.show~.stats-counter {
+        opacity: 0 !important;
+        visibility: hidden;
+    }
+
+    .sidebar {
+        width: 85vw;
+        left: -85vw;
+    }
+
+    .goal-input {
+        width: 50px;
+    }
+
+    /* Hide tooltips on touch devices */
+    .tool-btn::after {
+        display: none;
+    }
+
+    /* Ensure menus show correctly on small screens */
+    .download-menu {
+        min-width: 140px;
+        bottom: 70px;
+    }
+}
