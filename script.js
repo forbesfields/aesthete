@@ -512,44 +512,7 @@ document.addEventListener('selectionchange', () => {
 
 // This section was moved up and merged with the general settings management
 
-// PDF Download
-function downloadPDF() {
-    const element = document.getElementById('editor');
 
-    // Check if html2pdf is loaded
-    if (typeof html2pdf === 'undefined') {
-        alert("PDF generator not ready. Please check your internet connection and try again.");
-        return;
-    }
-
-    const opt = {
-        margin: [1, 1, 1, 1],
-        filename: 'aesthete_document.pdf',
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: {
-            scale: 2,
-            backgroundColor: '#ffffff',
-            useCORS: true,
-            logging: false,
-            // Temporarily simplify font handling for reliability
-            onclone: (doc) => {
-                const editorClone = doc.getElementById('editor');
-                editorClone.style.overflow = 'visible';
-                editorClone.style.height = 'auto';
-            }
-        },
-        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-    };
-
-    html2pdf().set(opt).from(element).output('blob').then(blob => {
-        saveFile(blob, 'aesthete_document.pdf', 'application/pdf');
-    }).catch(err => {
-        console.error("PDF generation failed:", err);
-        alert("Could not generate PDF. Please try the Markdown or Text download option instead.");
-    });
-
-    document.getElementById('download-menu').classList.remove('show');
-}
 
 // Markdown Download
 function downloadMD() {
