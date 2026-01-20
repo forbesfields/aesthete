@@ -259,10 +259,10 @@ function showGoalComplete() {
     const msg = document.getElementById('goal-complete-msg');
     msg.classList.add('show');
 
-    // Hide after 3 seconds
+    // Hide after 5 seconds
     setTimeout(() => {
         msg.classList.remove('show');
-    }, 3000);
+    }, 5000);
 }
 
 // Import Management

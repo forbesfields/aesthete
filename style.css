@@ -82,6 +82,7 @@ body.sepia-mode {
     transition: var(--transition);
     color: inherit;
     letter-spacing: 0.03em;
+    pointer-events: auto;
 }
 
 .set-goal-btn:hover {
@@ -111,6 +112,7 @@ body.sepia-mode {
     display: flex;
     gap: 4px;
     align-items: center;
+    pointer-events: auto;
 }
 
 .goal-input-wrapper.hidden {
