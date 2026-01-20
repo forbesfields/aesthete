@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Distraction-Free Writer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@300;400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- html2pdf.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+
+<body class="light-mode">
+    <!-- Goal completion message -->
+    <div id="goal-complete-msg" class="goal-complete-msg">🎉 Word goal complete!</div>
+
+    <div id="stats-counter" class="stats-counter">
+        <div id="word-count">0 words</div>
+        <div id="char-count">0 characters</div>
+        <div id="read-time" style="margin-top: 4px; opacity: 0.6; font-size: 11px;">1 min read</div>
+        <div class="goal-input-container">
+            <button id="set-goal-btn" class="set-goal-btn" onclick="toggleGoalInput()">Set Goal</button>
+            <div id="goal-input-wrapper" class="goal-input-wrapper hidden">
+                <input type="text" id="goal-input" class="goal-input" placeholder="e.g. 500"
+                    onkeydown="handleGoalKeydown(event)">
+                <button class="goal-confirm-btn" onclick="confirmGoal()">✓</button>
+            </div>
+        </div>
+    </div>
+
+    <input type="file" id="file-import" accept=".txt,.md" style="display: none;">
+
+    <main id="editor-container">
+        <div id="editor" contenteditable="true" spellcheck="true" placeholder="Start writing something beautiful...">
+        </div>
+    </main>
+
+    <!-- Sidebar Overlay -->
+    <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <!-- Draft Explorer Sidebar -->
+    <div id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">Draft Explorer</div>
+            <button class="tool-btn" onclick="toggleSidebar()"><i data-lucide="x"></i></button>
+        </div>
+        <div class="sidebar-actions">
+            <button class="new-draft-btn" onclick="createNewDraft()">
+                <i data-lucide="plus"></i> New Draft
+            </button>
+            <button class="import-btn" onclick="triggerImport()" title="Import File (.txt, .md)">
+                <i data-lucide="upload"></i>
+            </button>
+        </div>
+        <input type="file" id="import-file-input" accept=".txt,.md" style="display: none;"
+            onchange="handleFileImport(event)">
+        <div id="draft-list" class="draft-list">
+            <!-- Drafts will be injected here -->
+        </div>
+    </div>
+
+    <div class="bottom-panel">
+        <div class="download-container">
+            <button class="tool-btn" onclick="toggleSettingsMenu()" data-tooltip="Typography Settings">
+                <i data-lucide="settings"></i>
+            </button>
+            <div id="settings-menu" class="download-menu" style="padding: 15px; min-width: 200px;">
+                <div style="margin-bottom: 12px;">
+                    <label style="font-size: 11px; opacity: 0.6; display: block; margin-bottom: 5px;">Font Size</label>
+                    <input type="range" id="font-size-slider" min="14" max="32" value="21"
+                        oninput="updateTypography('fontSize', this.value)" style="width: 100%;">
+                </div>
+                <div>
+                    <label style="font-size: 11px; opacity: 0.6; display: block; margin-bottom: 5px;">Line
+                        Height</label>
+                    <input type="range" id="line-height-slider" min="1" max="2.5" step="0.1" value="1.6"
+                        oninput="updateTypography('lineHeight', this.value)" style="width: 100%;">
+                </div>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <button class="tool-btn" id="bold-btn" onclick="toggleFormat('bold')" data-tooltip="Bold">
+            <i data-lucide="bold"></i>
+        </button>
+        <button class="tool-btn" id="italic-btn" onclick="toggleFormat('italic')" data-tooltip="Italic">
+            <i data-lucide="italic"></i>
+        </button>
+        <button class="tool-btn" id="underline-btn" onclick="toggleFormat('underline')" data-tooltip="Underline">
+            <i data-lucide="underline"></i>
+        </button>
+
+        <div class="divider"></div>
+
+        <button class="tool-btn" onclick="toggleFocusMode()" id="focus-btn" data-tooltip="Focus Mode">
+            <i data-lucide="eye"></i>
+        </button>
+        <button class="tool-btn" onclick="toggleTypewriterMode()" id="typewriter-btn" data-tooltip="Typewriter Mode">
+            <i data-lucide="keyboard"></i>
+        </button>
+
+        <div class="divider"></div>
+
+        <button class="tool-btn" id="drafts-btn" onclick="toggleSidebar()" data-tooltip="Draft Explorer">
+            <i data-lucide="library"></i>
+        </button>
+
+        <button class="tool-btn" onclick="togglePomodoro()" id="pomodoro-btn" data-tooltip="Pomodoro Timer">
+            <i data-lucide="timer"></i>
+            <span id="pomodoro-display" style="display: none; font-size: 11px; margin-left: 5px;">25:00</span>
+        </button>
+
+        <div class="divider"></div>
+
+        <button class="tool-btn" onclick="toggleTheme()" id="theme-btn" data-tooltip="Toggle Theme">
+            <i data-lucide="sun"></i>
+        </button>
+
+        <button class="tool-btn" onclick="toggleFullscreen()" id="fullscreen-btn" data-tooltip="Toggle Fullscreen">
+            <i data-lucide="maximize"></i>
+        </button>
+
+        <div class="download-container">
+            <button class="tool-btn" onclick="toggleDownloadMenu()" data-tooltip="Download Options">
+                <i data-lucide="download"></i>
+            </button>
+            <div id="download-menu" class="download-menu">
+                <button onclick="downloadPDF()">PDF Document</button>
+                <button onclick="downloadMD()">Markdown</button>
+                <button onclick="downloadTXT()">Plain Text</button>
+                <div class="divider" style="width: 100%; height: 1px; margin: 4px 0;"></div>
+                <button onclick="document.getElementById('file-import').click()">Open / Import...</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Find & Replace Bar -->
+    <div id="find-replace-bar" class="find-replace-bar">
+        <div class="find-row">
+            <div class="find-input-wrapper">
+                <input type="text" id="find-input" placeholder="Find..." onkeydown="handleFindKeyDown(event)">
+                <span id="find-count" class="find-count">0/0</span>
+            </div>
+            <div class="find-controls">
+                <button class="find-btn" onclick="handleFind(true)" title="Previous (Shift+Enter)">
+                    <i data-lucide="chevron-up"></i>
+                </button>
+                <button class="find-btn" onclick="handleFind(false)" title="Next (Enter)">
+                    <i data-lucide="chevron-down"></i>
+                </button>
+                <button class="find-btn" onclick="toggleFindBar()" title="Close (Esc)">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+        </div>
+        <div class="replace-row" id="replace-row">
+            <input type="text" id="replace-input" placeholder="Replace with..." onkeydown="handleReplaceKeyDown(event)">
+            <div class="replace-controls">
+                <button class="replace-btn" onclick="handleReplace()">Replace</button>
+                <button class="replace-btn" onclick="handleReplaceAll()">All</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
