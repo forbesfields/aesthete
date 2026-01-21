@@ -152,7 +152,7 @@ function centerCaret() {
 editor.addEventListener('input', () => {
     updateStats();
     if (typewriterMode) {
-        centerCaret();
+        setTimeout(centerCaret, 0);
     } else {
         ensureCursorVisible();
     }
