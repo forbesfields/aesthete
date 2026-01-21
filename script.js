@@ -140,7 +140,20 @@ function centerCaret() {
     const selection = window.getSelection();
     if (selection.rangeCount > 0) {
         const range = selection.getRangeAt(0);
-        const rect = range.getBoundingClientRect();
+        let rect = range.getBoundingClientRect();
+
+        // Fix: When creating a new empty line, getBoundingClientRect() may return all zeros.
+        // Fallback to the anchor node's element rect.
+        if (rect.top === 0 && rect.height === 0) {
+            let node = selection.anchorNode;
+            // If text node, get parent. If element, use it.
+            if (node.nodeType === 3) node = node.parentNode;
+
+            if (node && node.nodeType === 1) {
+                rect = node.getBoundingClientRect();
+            }
+        }
+
         const winCenter = window.innerHeight / 2;
         const offset = rect.top - winCenter;
         if (Math.abs(offset) > 1) {
