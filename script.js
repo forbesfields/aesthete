@@ -144,10 +144,24 @@ function centerCaret() {
 
         // Fix: When creating a new empty line, getBoundingClientRect() may return all zeros.
         // Fallback to the anchor node's element rect.
-        if (rect.top === 0 && rect.height === 0) {
+        if (rect.top === 0 && rect.bottom === 0) {
             let node = selection.anchorNode;
-            // If text node, get parent. If element, use it.
-            if (node.nodeType === 3) node = node.parentNode;
+
+            // If text node, get parent
+            if (node.nodeType === 3) {
+                node = node.parentNode;
+            }
+
+            // If node is the editor itself (container), try to find the specific child
+            if (node === editor) {
+                const offset = selection.anchorOffset;
+                if (offset < node.childNodes.length) {
+                    node = node.childNodes[offset];
+                } else if (node.childNodes.length > 0) {
+                    // Fallback to last child if offset is out of bounds
+                    node = node.childNodes[node.childNodes.length - 1];
+                }
+            }
 
             if (node && node.nodeType === 1) {
                 rect = node.getBoundingClientRect();
