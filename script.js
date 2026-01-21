@@ -551,6 +551,36 @@ function downloadTXT() {
     document.getElementById('download-menu').classList.remove('show');
 }
 
+// Copy as Markdown
+function copyMarkdown() {
+    // Same MD conversion as downloadMD()
+    let content = editor.innerHTML
+        .replace(/<div>/g, '\n')
+        .replace(/<\/div>/g, '')
+        .replace(/<br>/g, '\n')
+        .replace(/<b>|<strong>/g, '**')
+        .replace(/<\/b>|<\/strong>/g, '**')
+        .replace(/<i>|<em>/g, '_')
+        .replace(/<\/i>|<\/em>/g, '_')
+        .replace(/<u>/g, '<ins>')
+        .replace(/<\/u>/g, '</ins>');
+
+    // Decode HTML entities
+    const temp = document.createElement('div');
+    temp.innerHTML = content;
+    content = temp.innerText;
+
+    navigator.clipboard.writeText(content);
+    document.getElementById('download-menu').classList.remove('show');
+}
+
+// Copy as Plain Text
+function copyPlainText() {
+    const content = document.getElementById('editor').innerText;
+    navigator.clipboard.writeText(content);
+    document.getElementById('download-menu').classList.remove('show');
+}
+
 // Helper to save files
 function saveFile(content, filename, type) {
     const blob = (content instanceof Blob) ? content : new Blob([content], { type: type });

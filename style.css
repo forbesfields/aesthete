@@ -908,10 +908,6 @@ input[type="range"]::-webkit-slider-thumb {
         scrollbar-width: none;
         white-space: nowrap;
         background: rgba(255, 255, 255, 0.8) !important;
-        left: 2.5vw;
-        transform: none;
-        backdrop-filter: none;
-        -webkit-backdrop-filter: none;
     }
 
     .dark-mode .bottom-panel {
@@ -963,10 +959,7 @@ input[type="range"]::-webkit-slider-thumb {
 
     /* Ensure menus show correctly on small screens */
     .download-menu {
-        position: fixed;
         min-width: 140px;
-        bottom: 80px;
-        left: 50%;
-        transform: translateX(-50%);
+        bottom: 70px;
     }
 }

@@ -132,9 +132,11 @@
                 <i data-lucide="download"></i>
             </button>
             <div id="download-menu" class="download-menu">
-
                 <button onclick="downloadMD()">Markdown</button>
                 <button onclick="downloadTXT()">Plain Text</button>
+                <div class="divider" style="width: 100%; height: 1px; margin: 4px 0;"></div>
+                <button onclick="copyMarkdown()">Copy as Markdown</button>
+                <button onclick="copyPlainText()">Copy as Plain Text</button>
                 <div class="divider" style="width: 100%; height: 1px; margin: 4px 0;"></div>
                 <button onclick="document.getElementById('file-import').click()">Open / Import...</button>
             </div>
