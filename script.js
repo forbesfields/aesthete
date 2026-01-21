@@ -152,22 +152,27 @@ function centerCaret() {
 function ensureCaretVisible() {
     if (typewriterMode) return;
 
-    const selection = window.getSelection();
-    if (selection.rangeCount > 0) {
-        const range = selection.getRangeAt(0);
-        const rect = range.getBoundingClientRect();
+    requestAnimationFrame(() => {
+        const selection = window.getSelection();
+        if (selection.rangeCount > 0) {
+            // Ensure we are working with the editor
+            if (!editor.contains(selection.anchorNode)) return;
 
-        // Margin from bottom to ensure caret is not hidden behind the bottom panel
-        // Bottom panel is approx 80-100px with padding/margin.
-        // We add extra buffer to keep it visually clean.
-        const bottomMargin = 120;
-        const viewportHeight = window.innerHeight;
+            const range = selection.getRangeAt(0);
+            const rect = range.getBoundingClientRect();
 
-        if (rect.bottom > viewportHeight - bottomMargin) {
-            const offset = rect.bottom - (viewportHeight - bottomMargin);
-            window.scrollBy({ top: offset, behavior: 'smooth' });
+            // Margin from bottom to ensure caret is not hidden behind the bottom panel
+            // Bottom panel is approx 80-100px with padding/margin.
+            // We add extra buffer to keep it visually clean.
+            const bottomMargin = 120;
+            const viewportHeight = window.innerHeight;
+
+            if (rect.bottom > viewportHeight - bottomMargin) {
+                const offset = rect.bottom - (viewportHeight - bottomMargin);
+                window.scrollBy({ top: offset, behavior: 'smooth' });
+            }
         }
-    }
+    });
 }
 
 editor.addEventListener('input', () => {
