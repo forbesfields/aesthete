@@ -149,20 +149,57 @@ function centerCaret() {
     }
 }
 
+function ensureCaretVisible() {
+    if (typewriterMode) return;
+
+    const selection = window.getSelection();
+    if (selection.rangeCount > 0) {
+        const range = selection.getRangeAt(0);
+        const rect = range.getBoundingClientRect();
+
+        // Margin from bottom to ensure caret is not hidden behind the bottom panel
+        // Bottom panel is approx 80-100px with padding/margin.
+        // We add extra buffer to keep it visually clean.
+        const bottomMargin = 120;
+        const viewportHeight = window.innerHeight;
+
+        if (rect.bottom > viewportHeight - bottomMargin) {
+            const offset = rect.bottom - (viewportHeight - bottomMargin);
+            window.scrollBy({ top: offset, behavior: 'smooth' });
+        }
+    }
+}
+
 editor.addEventListener('input', () => {
     updateStats();
-    if (typewriterMode) centerCaret();
+    if (typewriterMode) {
+        centerCaret();
+    } else {
+        ensureCaretVisible();
+    }
 });
 
-// Additional triggers for Typewriter Mode to ensure focus stays centered
+// Additional triggers to ensure focus stays visible
 editor.addEventListener('keyup', () => {
-    if (typewriterMode) centerCaret();
+    if (typewriterMode) {
+        centerCaret();
+    } else {
+        ensureCaretVisible();
+    }
 });
 editor.addEventListener('mouseup', () => {
-    if (typewriterMode) centerCaret();
+    if (typewriterMode) {
+        centerCaret();
+    } else {
+        ensureCaretVisible();
+    }
 });
 editor.addEventListener('click', () => {
-    if (typewriterMode) centerCaret();
+    if (typewriterMode) {
+        centerCaret();
+    } else {
+        ensureCaretVisible();
+    }
 });
 
 // Pomodoro Timer
