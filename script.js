@@ -151,15 +151,47 @@ function centerCaret() {
 
 editor.addEventListener('input', () => {
     updateStats();
-    if (typewriterMode) centerCaret();
+    if (typewriterMode) {
+        centerCaret();
+    } else {
+        ensureCursorVisible();
+    }
 });
 
-// Additional triggers for Typewriter Mode to ensure focus stays centered
+// Ensure cursor is visible above the bottom panel
+function ensureCursorVisible() {
+    const selection = window.getSelection();
+    if (selection.rangeCount > 0) {
+        const range = selection.getRangeAt(0);
+        const rect = range.getBoundingClientRect();
+        const panel = document.querySelector('.bottom-panel');
+        const panelRect = panel.getBoundingClientRect();
+        
+        // Calculate the safe zone (above the bottom panel with some padding)
+        const safeBottom = panelRect.top - 40; // 40px padding above the panel
+        
+        // If cursor is below the safe zone, scroll up
+        if (rect.bottom > safeBottom) {
+            const scrollAmount = rect.bottom - safeBottom + 20; // Extra 20px for comfort
+            window.scrollBy({ top: scrollAmount, behavior: 'smooth' });
+        }
+    }
+}
+
+// Additional triggers for Typewriter Mode and normal scrolling
 editor.addEventListener('keyup', () => {
-    if (typewriterMode) centerCaret();
+    if (typewriterMode) {
+        centerCaret();
+    } else {
+        ensureCursorVisible();
+    }
 });
 editor.addEventListener('mouseup', () => {
-    if (typewriterMode) centerCaret();
+    if (typewriterMode) {
+        centerCaret();
+    } else {
+        ensureCursorVisible();
+    }
 });
 editor.addEventListener('click', () => {
     if (typewriterMode) centerCaret();
@@ -311,16 +343,19 @@ function toggleTheme() {
     const body = document.body;
     const btn = document.getElementById('theme-btn');
 
+    // Remove all theme classes
+    body.classList.remove('light-mode', 'sepia-mode', 'dark-mode');
+
     if (currentTheme === 'light') {
-        body.className = 'sepia-mode';
+        body.classList.add('sepia-mode');
         currentTheme = 'sepia';
         btn.innerHTML = '<i data-lucide="coffee"></i>';
     } else if (currentTheme === 'sepia') {
-        body.className = 'dark-mode';
+        body.classList.add('dark-mode');
         currentTheme = 'dark';
         btn.innerHTML = '<i data-lucide="moon"></i>';
     } else {
-        body.className = 'light-mode';
+        body.classList.add('light-mode');
         currentTheme = 'light';
         btn.innerHTML = '<i data-lucide="sun"></i>';
     }
