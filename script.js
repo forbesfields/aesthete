@@ -135,17 +135,45 @@ function toggleTypewriterMode() {
     if (typewriterMode) centerCaret();
 }
 
+function getCaretRect() {
+    const selection = window.getSelection();
+    if (!selection.rangeCount) return null;
+    if (!editor.contains(selection.anchorNode)) return null;
+
+    const originalRange = selection.getRangeAt(0).cloneRange();
+    const collapsedRange = originalRange.cloneRange();
+    collapsedRange.collapse(true);
+
+    let rect = collapsedRange.getBoundingClientRect();
+    if (rect && rect.height) return rect;
+
+    const marker = document.createElement('span');
+    marker.appendChild(document.createTextNode('\u200b'));
+    marker.style.position = 'relative';
+    marker.style.display = 'inline-block';
+    marker.style.width = '0';
+    marker.style.height = '1em';
+
+    collapsedRange.insertNode(marker);
+    rect = marker.getBoundingClientRect();
+
+    marker.remove();
+    selection.removeAllRanges();
+    selection.addRange(originalRange);
+
+    return rect;
+}
+
 function centerCaret() {
     if (!typewriterMode) return;
-    const selection = window.getSelection();
-    if (selection.rangeCount > 0) {
-        const range = selection.getRangeAt(0);
-        const rect = range.getBoundingClientRect();
-        const winCenter = window.innerHeight / 2;
-        const offset = rect.top - winCenter;
-        if (Math.abs(offset) > 1) {
-            window.scrollBy({ top: offset, behavior: 'smooth' });
-        }
+    const rect = getCaretRect();
+    if (!rect) return;
+
+    const winCenter = window.innerHeight / 2;
+    const caretCenter = rect.top + rect.height / 2;
+    const offset = caretCenter - winCenter;
+    if (Math.abs(offset) > 1) {
+        window.scrollBy({ top: offset, behavior: 'smooth' });
     }
 }
 
@@ -890,4 +918,3 @@ document.addEventListener('keydown', (e) => {
         toggleFindBar();
     }
 });
-
