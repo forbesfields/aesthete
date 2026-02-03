@@ -75,6 +75,7 @@ function toggleFullscreen() {
 
 // Focus Mode
 let focusMode = false;
+let lastActiveParagraph = null;
 function toggleFocusMode() {
     focusMode = !focusMode;
     document.body.classList.toggle('focus-mode', focusMode);
@@ -82,7 +83,10 @@ function toggleFocusMode() {
 
     if (focusMode) {
         wrapTextInDivs();
-        updateFocus();
+        setTimeout(() => {
+            editor.focus();
+            updateFocus();
+        }, 0);
     }
 }
 
@@ -100,8 +104,18 @@ function wrapTextInDivs() {
         const content = editor.innerHTML;
         if (content.trim()) {
             editor.innerHTML = `<div>${content}</div>`;
+        } else {
+            editor.innerHTML = "<div><br></div>";
         }
     }
+}
+
+function setActiveParagraph(target) {
+    if (!target) return;
+    lastActiveParagraph = target;
+    Array.from(editor.children).forEach(child => {
+        child.classList.toggle('active-paragraph', child === target);
+    });
 }
 
 function updateFocus() {
@@ -109,7 +123,16 @@ function updateFocus() {
     const selection = window.getSelection();
     if (selection.rangeCount > 0) {
         let node = selection.anchorNode;
-        if (!node || node === editor) return;
+        if (!node) return;
+
+        if (!editor.contains(node)) {
+            if (lastActiveParagraph) {
+                setActiveParagraph(lastActiveParagraph);
+            } else if (editor.children.length > 0) {
+                setActiveParagraph(editor.children[0]);
+            }
+            return;
+        }
 
         let current = node;
         while (current && current.parentNode !== editor) {
@@ -117,10 +140,10 @@ function updateFocus() {
         }
 
         if (current && current.parentNode === editor) {
-            Array.from(editor.children).forEach(child => {
-                child.classList.toggle('active-paragraph', child === current);
-            });
+            setActiveParagraph(current);
         }
+    } else if (lastActiveParagraph) {
+        setActiveParagraph(lastActiveParagraph);
     }
 }
 
@@ -179,6 +202,10 @@ function centerCaret() {
 
 editor.addEventListener('input', () => {
     updateStats();
+    if (focusMode) {
+        wrapTextInDivs();
+        updateFocus();
+    }
     if (typewriterMode) {
         setTimeout(centerCaret, 0);
     } else {
@@ -208,6 +235,7 @@ function ensureCursorVisible() {
 
 // Additional triggers for Typewriter Mode and normal scrolling
 editor.addEventListener('keyup', () => {
+    if (focusMode) updateFocus();
     if (typewriterMode) {
         centerCaret();
     } else {
@@ -215,6 +243,7 @@ editor.addEventListener('keyup', () => {
     }
 });
 editor.addEventListener('mouseup', () => {
+    if (focusMode) updateFocus();
     if (typewriterMode) {
         centerCaret();
     } else {
@@ -222,6 +251,7 @@ editor.addEventListener('mouseup', () => {
     }
 });
 editor.addEventListener('click', () => {
+    if (focusMode) updateFocus();
     if (typewriterMode) centerCaret();
 });
 
