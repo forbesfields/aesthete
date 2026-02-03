@@ -66,26 +66,6 @@
     </div>
 
     <div class="bottom-panel">
-        <div class="download-container">
-            <button class="tool-btn" onclick="toggleSettingsMenu()" data-tooltip="Typography Settings">
-                <i data-lucide="settings"></i>
-            </button>
-            <div id="settings-menu" class="download-menu" style="padding: 15px; min-width: 200px;">
-                <div style="margin-bottom: 12px;">
-                    <label style="font-size: 11px; opacity: 0.6; display: block; margin-bottom: 5px;">Font Size</label>
-                    <input type="range" id="font-size-slider" min="14" max="32" value="21"
-                        oninput="updateTypography('fontSize', this.value)" style="width: 100%;">
-                </div>
-                <div>
-                    <label style="font-size: 11px; opacity: 0.6; display: block; margin-bottom: 5px;">Line
-                        Height</label>
-                    <input type="range" id="line-height-slider" min="1" max="2.5" step="0.1" value="1.6"
-                        oninput="updateTypography('lineHeight', this.value)" style="width: 100%;">
-                </div>
-            </div>
-        </div>
-
-        <div class="divider"></div>
 
         <button class="tool-btn" id="bold-btn" onclick="toggleFormat('bold')" data-tooltip="Bold">
             <i data-lucide="bold"></i>
@@ -97,50 +77,65 @@
             <i data-lucide="underline"></i>
         </button>
 
-        <div class="divider"></div>
+        <div class="divider hide-on-mobile"></div>
 
-        <button class="tool-btn" onclick="toggleFocusMode()" id="focus-btn" data-tooltip="Focus Mode">
+        <button class="tool-btn hide-on-mobile" onclick="toggleFocusMode()" id="focus-btn" data-tooltip="Focus Mode">
             <i data-lucide="eye"></i>
         </button>
-        <button class="tool-btn" onclick="toggleTypewriterMode()" id="typewriter-btn" data-tooltip="Typewriter Mode">
+        <button class="tool-btn hide-on-mobile" onclick="toggleTypewriterMode()" id="typewriter-btn" data-tooltip="Typewriter Mode">
             <i data-lucide="keyboard"></i>
         </button>
 
-        <div class="divider"></div>
-
-        <button class="tool-btn" id="drafts-btn" onclick="toggleSidebar()" data-tooltip="Draft Explorer">
-            <i data-lucide="library"></i>
-        </button>
-
-        <button class="tool-btn" onclick="togglePomodoro()" id="pomodoro-btn" data-tooltip="Pomodoro Timer">
-            <i data-lucide="timer"></i>
-            <span id="pomodoro-display" style="display: none; font-size: 11px; margin-left: 5px;">25:00</span>
-        </button>
-
-        <div class="divider"></div>
+        <div class="divider hide-on-mobile"></div>
 
         <button class="tool-btn" onclick="toggleTheme()" id="theme-btn" data-tooltip="Toggle Theme">
             <i data-lucide="sun"></i>
         </button>
 
-        <button class="tool-btn" onclick="toggleFullscreen()" id="fullscreen-btn" data-tooltip="Toggle Fullscreen">
+        <button class="tool-btn hide-on-mobile" onclick="toggleFullscreen()" id="fullscreen-btn" data-tooltip="Toggle Fullscreen">
             <i data-lucide="maximize"></i>
         </button>
 
         <div class="download-container">
-            <button class="tool-btn" onclick="toggleDownloadMenu()" data-tooltip="Download Options">
-                <i data-lucide="download"></i>
+            <button class="tool-btn" onclick="toggleAdvancedMenu()" data-tooltip="Advanced Tools">
+                <i data-lucide="menu"></i>
             </button>
-            <div id="download-menu" class="download-menu">
-                <button onclick="downloadMD()">Markdown</button>
-                <button onclick="downloadTXT()">Plain Text</button>
+            <div id="advanced-menu" class="download-menu">
+                <button onclick="handleAdvancedAction('focus')">Focus Mode</button>
+                <button onclick="handleAdvancedAction('typewriter')">Typewriter Mode</button>
+                <button onclick="handleAdvancedAction('pomodoro')">Pomodoro Timer</button>
+                <button onclick="handleAdvancedAction('drafts')">Draft Explorer</button>
+                <button onclick="handleAdvancedAction('find')">Find & Replace</button>
                 <div class="divider" style="width: 100%; height: 1px; margin: 4px 0;"></div>
-                <button onclick="copyMarkdown()">Copy as Markdown</button>
-                <button onclick="copyPlainText()">Copy as Plain Text</button>
-                <div class="divider" style="width: 100%; height: 1px; margin: 4px 0;"></div>
-                <button onclick="document.getElementById('file-import').click()">Open / Import...</button>
+                <button onclick="handleAdvancedAction('settings')">Typography Settings</button>
+                <button onclick="handleAdvancedAction('download')">Download / Copy</button>
+                <button onclick="handleAdvancedAction('import')">Open / Import...</button>
             </div>
         </div>
+    </div>
+
+    <div id="settings-menu" class="download-menu" style="padding: 15px; min-width: 200px;">
+        <div style="margin-bottom: 12px;">
+            <label style="font-size: 11px; opacity: 0.6; display: block; margin-bottom: 5px;">Font Size</label>
+            <input type="range" id="font-size-slider" min="14" max="32" value="21"
+                oninput="updateTypography('fontSize', this.value)" style="width: 100%;">
+        </div>
+        <div>
+            <label style="font-size: 11px; opacity: 0.6; display: block; margin-bottom: 5px;">Line
+                Height</label>
+            <input type="range" id="line-height-slider" min="1" max="2.5" step="0.1" value="1.6"
+                oninput="updateTypography('lineHeight', this.value)" style="width: 100%;">
+        </div>
+    </div>
+
+    <div id="download-menu" class="download-menu">
+        <button onclick="downloadMD()">Markdown</button>
+        <button onclick="downloadTXT()">Plain Text</button>
+        <div class="divider" style="width: 100%; height: 1px; margin: 4px 0;"></div>
+        <button onclick="copyMarkdown()">Copy as Markdown</button>
+        <button onclick="copyPlainText()">Copy as Plain Text</button>
+        <div class="divider" style="width: 100%; height: 1px; margin: 4px 0;"></div>
+        <button onclick="document.getElementById('file-import').click()">Open / Import...</button>
     </div>
 
     <!-- Find & Replace Bar -->

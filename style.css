@@ -431,6 +431,13 @@ body.sepia-mode {
     animation: menuFadeIn 0.3s ease-out;
 }
 
+#settings-menu,
+#download-menu {
+    position: fixed;
+    bottom: 120px;
+    left: 50%;
+}
+
 @keyframes menuFadeIn {
     from {
         opacity: 0;
@@ -871,6 +878,10 @@ input[type="range"]::-webkit-slider-thumb {
 
 /* Mobile Optimization */
 @media (max-width: 768px) {
+    .hide-on-mobile {
+        display: none !important;
+    }
+
     #editor-container {
         padding: 15px;
         padding-bottom: 150px;

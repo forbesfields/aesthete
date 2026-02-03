@@ -35,9 +35,33 @@ function toggleDownloadMenu() {
     document.getElementById('download-menu').classList.toggle('show');
 }
 
+function toggleAdvancedMenu() {
+    document.getElementById('advanced-menu').classList.toggle('show');
+}
+
+function handleAdvancedAction(action) {
+    document.getElementById('advanced-menu').classList.remove('show');
+    if (action === 'focus') toggleFocusMode();
+    if (action === 'typewriter') toggleTypewriterMode();
+    if (action === 'pomodoro') togglePomodoro();
+    if (action === 'drafts') toggleSidebar();
+    if (action === 'find') toggleFindBar();
+    if (action === 'settings') {
+        const menu = document.getElementById('settings-menu');
+        menu.classList.toggle('show');
+    }
+    if (action === 'download') {
+        const menu = document.getElementById('download-menu');
+        menu.classList.toggle('show');
+    }
+    if (action === 'import') {
+        document.getElementById('file-import').click();
+    }
+}
+
 // Close menus when clicking outside
 window.addEventListener('click', (e) => {
-    if (!e.target.closest('.download-container')) {
+    if (!e.target.closest('.download-container') && !e.target.closest('.download-menu')) {
         const menus = document.querySelectorAll('.download-menu');
         menus.forEach(menu => menu.classList.remove('show'));
     }
